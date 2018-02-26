@@ -1,0 +1,20 @@
+sudo: true
+dist: xenial
+language: go
+go:
+- 1.9
+install:
+- go get github.com/mitchellh/gox
+script:
+- gox -osarch="darwin/amd64 linux/amd64" -output "dist/ansible-terraform-inventory-{{.OS}}-{{.Arch}}"
+  github.com/jtopjian/ansible-terraform-inventory
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key:
+    secure: SEVEmlPdHHrUZ2VPyStLFIe7I9+EuFSCF/8BZOpALhALR91tWK8gIWRcdgXErzEV8nUmp7FFePo6OkCf4bqXwwrm5su9YXOuYu6JX9HdJU7SWP9R8AXLHMOUBMBK7erqmo+M8n4D9rDbCTelu+Ewy2K7Wv7BHzYEA7CSTkb8WG8mf1JZzLs85IsOEjtOHk1f6eKtwLfG+oI+y30eReTov7tcD654LaERu3N41dzo7pwTsgqxlPQCYXk3elKQeLWOHWXAl7taWBuHKGZ+EdAGp3BIQ52YYjeM0kyyuUb12BrOXYgM0k2JOEMPSlOg/wUdPbUbpT90Ae1NM4AEnRw3rVGdnYCYP75m3HSg58jCeWTCzKrMDDcqVocK16CfqhCYiQeu2dPkRzJdycBxY+ZjoKBEZMnBH6TFmUbleATw5zrevTDof24QfDitrU4Di8EdghddUFweFjLJSZ6Gg2lJNtJ6hJJ6HSaIZ4r+J+Tbccq3PlZGQ2KMUlx92hOnv9ZRRrdxLuad2aEmuppEzmfsr3rhID97fgULNQfGp1BVTy9ri0By+8nufxriDJ6QkzQN5XqYLu7+KB7lS2POhTACs7CHp4w90JrqW56McfntN/LGiHJjdmjwCP8kDGwI3m2M6UYPDzX7ozNSximnQQsr0jOp9lBkLFUapafKhfYM36g=
+  file: 'dist/*'
+  file_glob: true
+  on:
+    repo: jtopjian/ansible-terraform-inventory
+    tags: true
