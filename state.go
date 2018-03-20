@@ -232,6 +232,10 @@ func getState(path string) (*State, error) {
 		return nil, fmt.Errorf("Error reading output of `terraform state pull`: %s\n", err)
 	}
 
+	if string(b[0]) == "o" && string(b[1]) == ":" {
+		b = append(b[:0], b[2:]...)
+	}
+
 	var s State
 	err = json.Unmarshal(b, &s)
 	if err != nil {
