@@ -41,6 +41,7 @@ func (r State) GetGroup(group string) (*Resource, error) {
 
 	return nil, fmt.Errorf("Unable to find group %s", group)
 }
+
 func (r State) GetChildrenForGroup(group string) ([]string, error) {
 	var children []string
 
@@ -105,24 +106,37 @@ func (r State) GetHostsForGroup(group string) ([]string, error) {
 	return hosts, nil
 }
 
-func (r State) GetVarsForHost(host string) (map[string]interface{}, error) {
-	vars := make(map[string]interface{})
-
+func (r State) GetHost(host string) (*Resource, error) {
 	for _, m := range r.Modules {
 		for _, resource := range m.Resources {
 			if resource.Type == "ansible_host" {
-				for attrName, attr := range resource.Primary.Attributes {
-					if strings.HasPrefix(attrName, "vars.") {
-						if attrName == "vars.%" {
-							continue
-						}
-
-						pieces := strings.SplitN(attrName, ".", 2)
-						if len(pieces) == 2 {
-							vars[pieces[1]] = attr
-						}
-					}
+				if resource.Primary.ID == host {
+					return &resource, nil
 				}
+			}
+		}
+	}
+
+	return nil, fmt.Errorf("Unable to find host %s", host)
+}
+
+func (r State) GetVarsForHost(host string) (map[string]interface{}, error) {
+	vars := make(map[string]interface{})
+
+	resource, err := r.GetHost(host)
+	if err != nil {
+		return nil, err
+	}
+
+	for attrName, attr := range resource.Primary.Attributes {
+		if strings.HasPrefix(attrName, "vars.") {
+			if attrName == "vars.%" {
+				continue
+			}
+
+			pieces := strings.SplitN(attrName, ".", 2)
+			if len(pieces) == 2 {
+				vars[pieces[1]] = attr
 			}
 		}
 	}
