@@ -2,12 +2,11 @@ sudo: true
 dist: xenial
 language: go
 go:
-- 1.9
+  - 1.9
 install:
-- go get github.com/mitchellh/gox
+  - go get github.com/mitchellh/gox
 script:
-- gox -osarch="darwin/amd64 linux/amd64" -output "dist/ansible-terraform-inventory-{{.OS}}-{{.Arch}}"
-  github.com/jtopjian/ansible-terraform-inventory
+  - gox -osarch="darwin/amd64 linux/amd64" -output "dist/ansible-terraform-inventory-{{.OS}}-{{.Arch}}" github.com/jtopjian/ansible-terraform-inventory
 deploy:
   provider: releases
   skip_cleanup: true
