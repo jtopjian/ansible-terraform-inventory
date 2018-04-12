@@ -44,7 +44,7 @@ Building From Source
 --------------------
 
 ```shell
-$ go get https://github.com/jtopjian/ansible-terraform-inventory
+$ go get github.com/jtopjian/ansible-terraform-inventory
 $ go build -o $GOPATH/bin/terraform-inventory
 $ ln -s $GOPATH/bin/terraform-inventory /path/to/ansible/hosts
 ```
