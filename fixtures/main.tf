@@ -18,5 +18,17 @@ resource "ansible_host" "host_1" {
   vars {
     ansible_user = "ubuntu"
     ansible_host = "1.2.3.4"
+    test         = "host_1"
+  }
+}
+
+resource "ansible_host" "host_2" {
+  inventory_hostname = "host_2"
+  groups             = ["group_1"]
+
+  vars {
+    ansible_user = "ubuntu"
+    ansible_host = "1.2.3.5"
+    test         = "host_2"
   }
 }
