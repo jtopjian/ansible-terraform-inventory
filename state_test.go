@@ -47,7 +47,7 @@ var expectedState = State{
 					Primary: Primary{
 						ID: "group_1",
 						Attributes: map[string]string{
-							"id": "group_1",
+							"id":                   "group_1",
 							"inventory_group_name": "group_1",
 							"children.#":           "1",
 							"children.0":           "group_2",
@@ -61,7 +61,7 @@ var expectedState = State{
 					Primary: Primary{
 						ID: "group_2",
 						Attributes: map[string]string{
-							"id": "group_2",
+							"id":                   "group_2",
 							"inventory_group_name": "group_2",
 						},
 					},
