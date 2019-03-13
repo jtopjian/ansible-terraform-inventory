@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os/exec"
+	"sort"
 	"strings"
 )
 
@@ -25,6 +26,7 @@ func (r State) GetGroups() ([]string, error) {
 		}
 	}
 
+	sort.Strings(groups)
 	return groups, nil
 }
 
@@ -59,6 +61,7 @@ func (r State) GetChildrenForGroup(group string) ([]string, error) {
 		}
 	}
 
+	sort.Strings(children)
 	return children, nil
 }
 
@@ -103,6 +106,7 @@ func (r State) GetHostsForGroup(group string) ([]string, error) {
 		}
 	}
 
+	sort.Strings(hosts)
 	return hosts, nil
 }
 
