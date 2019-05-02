@@ -2,22 +2,19 @@ sudo: true
 dist: xenial
 language: go
 go:
-  - 1.12
+- 1.12
 script:
-  - make fmtcheck
-  - make vet
-  - make test
-
+- make fmtcheck
+- make vet
+- make test
 before_deploy:
-  - make targets
-
+- make targets
 deploy:
   provider: releases
   skip_cleanup: true
   api_key:
-    secure: SEVEmlPdHHrUZ2VPyStLFIe7I9+EuFSCF/8BZOpALhALR91tWK8gIWRcdgXErzEV8nUmp7FFePo6OkCf4bqXwwrm5su9YXOuYu6JX9HdJU7SWP9R8AXLHMOUBMBK7erqmo+M8n4D9rDbCTelu+Ewy2K7Wv7BHzYEA7CSTkb8WG8mf1JZzLs85IsOEjtOHk1f6eKtwLfG+oI+y30eReTov7tcD654LaERu3N41dzo7pwTsgqxlPQCYXk3elKQeLWOHWXAl7taWBuHKGZ+EdAGp3BIQ52YYjeM0kyyuUb12BrOXYgM0k2JOEMPSlOg/wUdPbUbpT90Ae1NM4AEnRw3rVGdnYCYP75m3HSg58jCeWTCzKrMDDcqVocK16CfqhCYiQeu2dPkRzJdycBxY+ZjoKBEZMnBH6TFmUbleATw5zrevTDof24QfDitrU4Di8EdghddUFweFjLJSZ6Gg2lJNtJ6hJJ6HSaIZ4r+J+Tbccq3PlZGQ2KMUlx92hOnv9ZRRrdxLuad2aEmuppEzmfsr3rhID97fgULNQfGp1BVTy9ri0By+8nufxriDJ6QkzQN5XqYLu7+KB7lS2POhTACs7CHp4w90JrqW56McfntN/LGiHJjdmjwCP8kDGwI3m2M6UYPDzX7ozNSximnQQsr0jOp9lBkLFUapafKhfYM36g=
-  file: 'dist/*.zip'
-  file_glob: true
+    secure: T0xd6gHI2k+bi7tae2jeU2fk9hm+g4IThKxz5hkiX/jNzvCpZVMxSS83Q7NxooaZu1JeJ0+HtlXkqrkSxi78gJkAIpKlg8E+TLFF887tGlqmrGr5wnIvR5m875KYrM/hhvaGKJdq4CiHg3aGKdtb+E31cY08oGcKFhuRneuVALv15obabjXnXmRHtsT08HzWp2SFWNeX5FHIN5+1fDVQOqwpvMTMOOYWzL3BX/zAfZH+6/3+Mg5xTtKjO5ieQip6YWYJ8MMV27CX/AgfACVjbJWLsqZqypICEoea8bk1OzoM0frHMjiy0A4Vio2tb/fFQIwS+vwt2EBu/gB4YWQmub1cBI1JhGxSOobtHp2oyU8Jm/yRe+WNc2j4uubYqAuXMt4cpSqlwrSx0VWknRGh/Dsd3QPJxQVHqTCikOb/TTEo/CgekfUubwYpMgDN9kaMZbWarmJ9/490l2rJOizuqr5gjHEbC1khJTTBJK6ClToTlKhogkmOIOhSWXkAiKAW8rFMDHX3LtLQA3NG+F7WXIiFrj3uSqguVRGAkAsdUvKXWMxnmluoZeTAvbeq1MDXFqlMf4aOmAAUIKi9i0MPRtB5YVkAK0R6zjnPW8DZtAy7rvTmHPWSh4uBSBS4UZhhjM6j4LW2oc7dM5S/VQceEbyEb/dn2bziWcTPZxjHDjI=
+  file: dist/*.zip
   on:
     repo: jtopjian/ansible-terraform-inventory
     tags: true
