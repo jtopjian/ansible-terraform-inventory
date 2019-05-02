@@ -42,6 +42,35 @@ var expectedState = State{
 						},
 					},
 				},
+				"ansible_host.host_3": Resource{
+					Type: "ansible_host",
+					Primary: Primary{
+						ID: "host_3",
+						Attributes: map[string]string{
+							"id":                 "host_3",
+							"inventory_hostname": "host_3",
+							"groups.#":           "1",
+							"groups.0":           "group_3",
+							"vars.%":             "3",
+							"vars.ansible_host":  "1.2.3.6",
+							"vars.ansible_user":  "ubuntu",
+						},
+					},
+				},
+				"ansible_host.host_4": Resource{
+					Type: "ansible_host",
+					Primary: Primary{
+						ID: "host_4",
+						Attributes: map[string]string{
+							"id":                 "host_4",
+							"inventory_hostname": "host_4",
+							"groups.#":           "0",
+							"vars.%":             "3",
+							"vars.ansible_host":  "1.2.3.7",
+							"vars.ansible_user":  "ubuntu",
+						},
+					},
+				},
 				"ansible_group.group_1": Resource{
 					Type: "ansible_group",
 					Primary: Primary{
@@ -72,6 +101,14 @@ var expectedState = State{
 }
 
 var expectedInventory = map[string]interface{}{
+	"all": map[string]interface{}{
+		"hosts": []string{"host_1", "host_2", "host_3", "host_4"},
+		"vars":  map[string]interface{}{},
+	},
+	"ungrouped": map[string]interface{}{
+		"hosts": []string{"host_4"},
+		"vars":  map[string]interface{}{},
+	},
 	"group_1": map[string]interface{}{
 		"hosts":    []string{"host_1", "host_2"},
 		"children": []string{"group_2"},
@@ -81,6 +118,10 @@ var expectedInventory = map[string]interface{}{
 	},
 	"group_2": map[string]interface{}{
 		"vars": map[string]interface{}{},
+	},
+	"group_3": map[string]interface{}{
+		"hosts": []string{"host_3"},
+		"vars":  map[string]interface{}{},
 	},
 	"_meta": map[string]interface{}{
 		"hostvars": map[string]interface{}{
@@ -93,6 +134,14 @@ var expectedInventory = map[string]interface{}{
 				"ansible_host": "1.2.3.5",
 				"ansible_user": "ubuntu",
 				"test":         "host_2",
+			},
+			"host_3": map[string]interface{}{
+				"ansible_host": "1.2.3.6",
+				"ansible_user": "ubuntu",
+			},
+			"host_4": map[string]interface{}{
+				"ansible_host": "1.2.3.7",
+				"ansible_user": "ubuntu",
 			},
 		},
 	},
