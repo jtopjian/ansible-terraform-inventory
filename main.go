@@ -35,6 +35,11 @@ func main() {
 			errAndExit(err)
 		}
 
+		if s == nil {
+			fmt.Println("No state was found")
+			os.Exit(1)
+		}
+
 		j, err := s.ToJSON()
 		if err != nil {
 			errAndExit(err)
