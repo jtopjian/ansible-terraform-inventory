@@ -1,9 +1,13 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
 )
 
@@ -40,7 +44,7 @@ func main() {
 			os.Exit(1)
 		}
 
-		j, err := s.ToJSON()
+		j, err := ToJSON(s)
 		if err != nil {
 			errAndExit(err)
 		}
@@ -58,6 +62,68 @@ func getStatePath() string {
 	}
 
 	return "."
+}
+
+func getState(path string) (State, error) {
+	var out bytes.Buffer
+	var state State
+	terraformVersion := "0.12"
+
+	cmd := exec.Command("terraform", "state", "pull")
+	cmd.Dir = path
+	cmd.Stdout = &out
+
+	err := cmd.Run()
+	if err != nil {
+		return nil, fmt.Errorf("Error running `terraform state pull` in directory %s, %s\n", path, err)
+	}
+
+	b, err := ioutil.ReadAll(&out)
+	if err != nil {
+		return nil, fmt.Errorf("Error reading output of `terraform state pull`: %s\n", err)
+	}
+
+	// If there was no output, return nil and no error
+	if string(b) == "" {
+		return nil, nil
+	}
+
+	if string(b[0]) == "o" && string(b[1]) == ":" {
+		b = append(b[:0], b[2:]...)
+	}
+
+	var tmpState interface{}
+	err = json.Unmarshal(b, &tmpState)
+	if err != nil {
+		return nil, fmt.Errorf("Error unmarshaling state: %s\n", err)
+	}
+
+	if v, ok := tmpState.(map[string]interface{}); ok {
+		if v, ok := v["version"].(float64); ok {
+			if v == 3 {
+				terraformVersion = "0.11"
+			}
+		}
+	}
+
+	switch terraformVersion {
+	case "0.11":
+		var s StateV011
+		err = json.Unmarshal(b, &s)
+		if err != nil {
+			return nil, fmt.Errorf("Error unmarshaling state: %s\n", err)
+		}
+		state = s
+	default:
+		var s StateV012
+		err = json.Unmarshal(b, &s)
+		if err != nil {
+			return nil, fmt.Errorf("Error unmarshaling state: %s\n", err)
+		}
+		state = s
+	}
+
+	return state, nil
 }
 
 func errAndExit(err error) {
