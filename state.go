@@ -124,7 +124,7 @@ func BuildInventory(state State) (map[string]interface{}, error) {
 					}
 
 					if !found {
-						hostInventory = append(hostInventory, host)
+						groupInventory["hosts"] = append(hostInventory, host)
 					}
 				}
 			} else {
