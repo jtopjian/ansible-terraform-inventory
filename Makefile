@@ -1,6 +1,5 @@
 CURDIR := $(shell pwd)
 TEST?=$$(go list ./... |grep -v 'vendor')
-TARGETS=darwin linux
 TERRAFORM_VERSION_v011="0.11.13"
 TERRAFORM_VERSION_v012="0.12.0"
 ARCH=$(shell uname -s | tr A-Z a-z)
@@ -45,9 +44,3 @@ vet:
 		echo "and fix them if necessary before submitting the code for review."; \
 		exit 1; \
 	fi
-
-targets: $(TARGETS)
-
-$(TARGETS):
-	GOOS=$@ GOARCH=amd64 go build -o "dist/$@/ansible-terraform-inventory_${TRAVIS_TAG}_x4"
-	zip -j dist/ansible-terraform-inventory_${TRAVIS_TAG}_$@_amd64.zip dist/$@/ansible-terraform-inventory_${TRAVIS_TAG}_x4
