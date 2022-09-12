@@ -148,6 +148,23 @@ var expectedStateV012 = StateV012{
 			},
 		},
 		{
+			Name: "host_6",
+			Type: "ansible_host",
+			Instances: []InstanceV012{
+				{
+					Attributes: map[string]interface{}{
+						"id":                 "host_6",
+						"inventory_hostname": "host_6",
+						"groups":             []interface{}{"group_3"},
+						"vars": map[string]interface{}{
+							"ansible_host": "1.2.3.9",
+							"ansible_user": "ubuntu",
+						},
+					},
+				},
+			},
+		},
+		{
 			Name: "other_hosts",
 			Type: "ansible_host",
 			Instances: []InstanceV012{
@@ -180,7 +197,7 @@ var expectedStateV012 = StateV012{
 
 var expectedInventoryV012 = map[string]interface{}{
 	"all": map[string]interface{}{
-		"hosts": []string{"host_1", "host_2", "host_3", "host_4", "host_5", "some_host_0", "some_host_1"},
+		"hosts": []string{"host_1", "host_2", "host_3", "host_4", "host_5", "host_6", "some_host_0", "some_host_1"},
 		"vars":  map[string]interface{}{},
 	},
 	"ungrouped": map[string]interface{}{
@@ -198,7 +215,7 @@ var expectedInventoryV012 = map[string]interface{}{
 		"vars": map[string]interface{}{},
 	},
 	"group_3": map[string]interface{}{
-		"hosts": []string{"host_3"},
+		"hosts": []string{"host_3", "host_6"},
 		"vars":  map[string]interface{}{},
 	},
 	"some_group_0": map[string]interface{}{
@@ -231,6 +248,10 @@ var expectedInventoryV012 = map[string]interface{}{
 			},
 			"host_5": map[string]interface{}{
 				"ansible_host": "1.2.3.8",
+				"ansible_user": "ubuntu",
+			},
+			"host_6": map[string]interface{}{
+				"ansible_host": "1.2.3.9",
 				"ansible_user": "ubuntu",
 			},
 			"some_host_0": map[string]interface{}{
