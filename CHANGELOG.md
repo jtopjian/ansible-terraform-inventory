@@ -1,3 +1,9 @@
+## 0.3.1
+
+BUG FIXES
+
+* Fix unused hostvars array when grouping hosts [GH-7](https://github.com/jtopjian/ansible-terraform-inventory/pull/7)
+
 ## 0.3.0
 
 IMPROVEMENTS
