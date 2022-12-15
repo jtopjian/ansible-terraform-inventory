@@ -12,11 +12,22 @@ import (
 )
 
 var (
-	list = flag.Bool("list", false, "list mode")
+	list    = flag.Bool("list", false, "list mode")
+	command = Terraform
+)
+
+const (
+	Terraform  = "terraform"
+	Terragrunt = "terragrunt"
 )
 
 func main() {
 	flag.Parse()
+
+	v := os.Getenv("TF_TERRAGRUNT")
+	if v != "" {
+		command = Terragrunt
+	}
 
 	if *list {
 		file := getStatePath()
@@ -69,18 +80,18 @@ func getState(path string) (State, error) {
 	var state State
 	terraformVersion := "0.12"
 
-	cmd := exec.Command("terraform", "state", "pull")
+	cmd := exec.Command(command, "state", "pull")
 	cmd.Dir = path
 	cmd.Stdout = &out
 
 	err := cmd.Run()
 	if err != nil {
-		return nil, fmt.Errorf("Error running `terraform state pull` in directory %s, %s\n", path, err)
+		return nil, fmt.Errorf("Error running `%s state pull` in directory %s, %s\n", command, path, err)
 	}
 
 	b, err := ioutil.ReadAll(&out)
 	if err != nil {
-		return nil, fmt.Errorf("Error reading output of `terraform state pull`: %s\n", err)
+		return nil, fmt.Errorf("Error reading output of `%s state pull`: %s\n", command, err)
 	}
 
 	// If there was no output, return nil and no error

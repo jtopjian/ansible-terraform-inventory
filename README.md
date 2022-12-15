@@ -35,6 +35,11 @@ If your Ansible playbooks are in a different directory than your Terraform
 resources, then set the `TF_STATE` environment variable to the location
 of the Terraform directory.
 
+If you want to use [terragrunt](https://terragrunt.gruntwork.io/) instead of
+terraform, set the `TF_TERRAGRUNT` environment variable to any non-empty
+value and set `TF_STATE` to the directory where the `terragrunt.hcl` file is
+located.
+
 Installation
 ------------
 
