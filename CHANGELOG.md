@@ -1,3 +1,9 @@
+## 0.4.0
+
+IMPROVEMENTS
+
+* Added support for Terragrunt [GH-9](https://github.com/jtopjian/ansible-terraform-inventory/pull/9)
+
 ## 0.3.1
 
 BUG FIXES
