@@ -20,6 +20,10 @@ func (r StateV012) GetGroups() ([]string, error) {
 			for _, instance := range resource.Instances {
 				if v, ok := instance.Attributes["inventory_group_name"].(string); ok {
 					groups = append(groups, v)
+					continue
+				}
+				if v, ok := instance.Attributes["name"].(string); ok {
+					groups = append(groups, v)
 				}
 			}
 		}
@@ -39,6 +43,10 @@ func (r StateV012) GetHosts() ([]string, error) {
 			for _, instance := range resource.Instances {
 				if v, ok := instance.Attributes["inventory_hostname"].(string); ok {
 					hosts = append(hosts, v)
+					continue
+				}
+				if v, ok := instance.Attributes["name"].(string); ok {
+					hosts = append(hosts, v)
 				}
 			}
 		}
@@ -55,6 +63,11 @@ func (r StateV012) GetGroup(group string) (interface{}, error) {
 		if resource.Type == "ansible_group" {
 			for _, instance := range resource.Instances {
 				if v, ok := instance.Attributes["inventory_group_name"].(string); ok {
+					if v == group {
+						return instance, nil
+					}
+				}
+				if v, ok := instance.Attributes["name"].(string); ok {
 					if v == group {
 						return instance, nil
 					}
@@ -106,6 +119,10 @@ func (r StateV012) GetVarsForGroup(group string) (map[string]interface{}, error)
 		vars = v
 	}
 
+	if v, ok := instance.Attributes["variables"].(map[string]interface{}); ok {
+		vars = v
+	}
+
 	return vars, nil
 }
 
@@ -118,7 +135,10 @@ func (r StateV012) GetHostsForGroup(group string) ([]string, error) {
 			for _, instance := range resource.Instances {
 				hostname, ok := instance.Attributes["inventory_hostname"].(string)
 				if !ok {
-					continue
+					hostname, ok = instance.Attributes["name"].(string)
+					if !ok {
+						continue
+					}
 				}
 
 				groups, ok := instance.Attributes["groups"].([]interface{})
@@ -145,6 +165,11 @@ func (r StateV012) GetHost(host string) (interface{}, error) {
 		if resource.Type == "ansible_host" {
 			for _, instance := range resource.Instances {
 				if v, ok := instance.Attributes["inventory_hostname"].(string); ok {
+					if v == host {
+						return instance, nil
+					}
+				}
+				if v, ok := instance.Attributes["name"].(string); ok {
 					if v == host {
 						return instance, nil
 					}
@@ -190,6 +215,9 @@ func (r StateV012) GetVarsForHost(host string) (map[string]interface{}, error) {
 	instance = v.(InstanceV012)
 
 	if v, ok := instance.Attributes["vars"].(map[string]interface{}); ok {
+		vars = v
+	}
+	if v, ok := instance.Attributes["variables"].(map[string]interface{}); ok {
 		vars = v
 	}
 
