@@ -195,6 +195,195 @@ var expectedStateV012 = StateV012{
 	},
 }
 
+var expectedStateV012AnsibleAnsible = StateV012{
+	Resources: []ResourceV012{
+		{
+			Name: "group_1",
+			Type: "ansible_group",
+			Instances: []InstanceV012{
+				{
+					Attributes: map[string]interface{}{
+						"id":       "group_1",
+						"name":     "group_1",
+						"children": []interface{}{"group_2"},
+						"variables": map[string]interface{}{
+							"foo": "bar",
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "group_2",
+			Type: "ansible_group",
+			Instances: []InstanceV012{
+				{
+					Attributes: map[string]interface{}{
+						"id":        "group_2",
+						"name":      "group_2",
+						"children":  nil,
+						"variables": nil,
+					},
+				},
+			},
+		},
+		{
+			Name: "other_groups",
+			Type: "ansible_group",
+			Instances: []InstanceV012{
+				{
+					Attributes: map[string]interface{}{
+						"id":        "some_group_0",
+						"name":      "some_group_0",
+						"children":  nil,
+						"variables": nil,
+					},
+				},
+				{
+					Attributes: map[string]interface{}{
+						"id":        "some_group_1",
+						"name":      "some_group_1",
+						"children":  nil,
+						"variables": nil,
+					},
+				},
+			},
+		},
+		{
+			Name: "host_1",
+			Type: "ansible_host",
+			Instances: []InstanceV012{
+				{
+					Attributes: map[string]interface{}{
+						"id":     "host_1",
+						"name":   "host_1",
+						"groups": []interface{}{"group_1"},
+						"variables": map[string]interface{}{
+							"ansible_host": "1.2.3.4",
+							"ansible_user": "ubuntu",
+							"test":         "host_1",
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "host_2",
+			Type: "ansible_host",
+			Instances: []InstanceV012{
+				{
+					Attributes: map[string]interface{}{
+						"id":     "host_2",
+						"name":   "host_2",
+						"groups": []interface{}{"group_1"},
+						"variables": map[string]interface{}{
+							"ansible_host": "1.2.3.5",
+							"ansible_user": "ubuntu",
+							"test":         "host_2",
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "host_3",
+			Type: "ansible_host",
+			Instances: []InstanceV012{
+				{
+					Attributes: map[string]interface{}{
+						"id":     "host_3",
+						"name":   "host_3",
+						"groups": []interface{}{"group_3"},
+						"variables": map[string]interface{}{
+							"ansible_host": "1.2.3.6",
+							"ansible_user": "ubuntu",
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "host_4",
+			Type: "ansible_host",
+			Instances: []InstanceV012{
+				{
+					Attributes: map[string]interface{}{
+						"id":     "host_4",
+						"name":   "host_4",
+						"groups": nil,
+						"variables": map[string]interface{}{
+							"ansible_host": "1.2.3.7",
+							"ansible_user": "ubuntu",
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "host_5",
+			Type: "ansible_host",
+			Instances: []InstanceV012{
+				{
+					Attributes: map[string]interface{}{
+						"id":     "host_5",
+						"name":   "host_5",
+						"groups": nil,
+						"variables": map[string]interface{}{
+							"ansible_host": "1.2.3.8",
+							"ansible_user": "ubuntu",
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "host_6",
+			Type: "ansible_host",
+			Instances: []InstanceV012{
+				{
+					Attributes: map[string]interface{}{
+						"id":     "host_6",
+						"name":   "host_6",
+						"groups": []interface{}{"group_3"},
+						"variables": map[string]interface{}{
+							"ansible_host": "1.2.3.9",
+							"ansible_user": "ubuntu",
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "other_hosts",
+			Type: "ansible_host",
+			Instances: []InstanceV012{
+				{
+					Attributes: map[string]interface{}{
+						"id":     "some_host_0",
+						"name":   "some_host_0",
+						"groups": []interface{}{"some_group_0"},
+						"variables": map[string]interface{}{
+							"ansible_host": "1.2.4.0",
+							"ansible_user": "ubuntu",
+						},
+					},
+				},
+				{
+					Attributes: map[string]interface{}{
+						"id":     "some_host_1",
+						"name":   "some_host_1",
+						"groups": []interface{}{"some_group_1"},
+						"variables": map[string]interface{}{
+							"ansible_host": "1.2.4.1",
+							"ansible_user": "ubuntu",
+						},
+					},
+				},
+			},
+		},
+	},
+}
+
 var expectedInventoryV012 = map[string]interface{}{
 	"all": map[string]interface{}{
 		"hosts": []string{"host_1", "host_2", "host_3", "host_4", "host_5", "host_6", "some_host_0", "some_host_1"},
@@ -266,47 +455,56 @@ var expectedInventoryV012 = map[string]interface{}{
 	},
 }
 
+var fixtures_states = map[string]StateV012{
+	"fixtures/v012/nbering-ansible": expectedStateV012,
+	"fixtures/v012/ansible-ansible": expectedStateV012AnsibleAnsible,
+}
+
 func TestStateV012_basic(t *testing.T) {
-	actual, err := getState("fixtures/v012")
-	if err != nil {
-		t.Fatal(err)
+	for fixture, state := range fixtures_states {
+		t.Run(fixture, func(t *testing.T) {
+			actual, err := getState(fixture)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			assert.Equal(t, state, actual)
+
+			expectedGroups := []string{"group_1", "group_2", "some_group_0", "some_group_1"}
+			actualGroups, err := actual.GetGroups()
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			assert.Equal(t, expectedGroups, actualGroups)
+
+			expectedHosts := []string{"host_1", "host_2"}
+			actualHosts, err := actual.GetHostsForGroup(expectedGroups[0])
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			assert.Equal(t, expectedHosts, actualHosts)
+
+			expectedVars := map[string]interface{}{
+				"ansible_host": "1.2.3.4",
+				"ansible_user": "ubuntu",
+				"test":         "host_1",
+			}
+
+			actualVars, err := actual.GetVarsForHost("host_1")
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			assert.Equal(t, expectedVars, actualVars)
+
+			actualInventory, err := BuildInventory(actual)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			assert.Equal(t, expectedInventoryV012, actualInventory)
+		})
 	}
-
-	assert.Equal(t, expectedStateV012, actual)
-
-	expectedGroups := []string{"group_1", "group_2", "some_group_0", "some_group_1"}
-	actualGroups, err := actual.GetGroups()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	assert.Equal(t, expectedGroups, actualGroups)
-
-	expectedHosts := []string{"host_1", "host_2"}
-	actualHosts, err := actual.GetHostsForGroup(expectedGroups[0])
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	assert.Equal(t, expectedHosts, actualHosts)
-
-	expectedVars := map[string]interface{}{
-		"ansible_host": "1.2.3.4",
-		"ansible_user": "ubuntu",
-		"test":         "host_1",
-	}
-
-	actualVars, err := actual.GetVarsForHost("host_1")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	assert.Equal(t, expectedVars, actualVars)
-
-	actualInventory, err := BuildInventory(actual)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	assert.Equal(t, expectedInventoryV012, actualInventory)
 }
